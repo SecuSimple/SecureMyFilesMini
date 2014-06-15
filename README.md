@@ -1,4 +1,4 @@
-SecureMyFiles
+Secure My Files Mini
 =============
 
-Secure My Files - File encryption utility
+Secure My Files Mini - End-to-end file encryption in the browser
