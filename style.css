@@ -1,0 +1,164 @@
+html, body, input, div {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: 'Segoe UI', Helvetica, Arial;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+html, body {
+  height: 100%;
+}
+.btn {
+  display: block;
+  background-color: #F5F5F5;
+  color: #606060;
+  width: 150px;
+  height: 30px;
+  font-size: 15px;
+  text-align: center;
+  margin: 0 auto;
+  border-left: 10px solid #A4B45C;
+  border-right: 1px solid #E5E5E5;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn.lock {
+  background-image: url('icons/lock.png');
+  background-repeat: no-repeat;
+  margin-left: 50px;
+  border-left: 0;
+  height: 32px;
+}
+.btn.unlock {
+  background-image: url('icons/unlock.png');
+  background-repeat: no-repeat;
+  margin-left: 50px;
+  border-left: 0;
+  height: 32px;
+}
+.btn label {
+  cursor: pointer;
+  width: 140px;
+  height: 30px;
+  display: inline-block;
+  line-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn.lock:disabled {
+  color: #A0A0A0;
+  cursor: default;
+  background-image: url('icons/locklight.png');
+}
+.btn:disabled label {
+  cursor: default;
+}
+input.btn {
+  padding: 5px;
+}
+input.text {
+  border-right: 1px solid #E5E5E5;
+  border-left: 10px solid #A4B45C;
+  color: #606060;
+  font-size: 15px;
+  padding: 5px 10px;
+  width: 150px;
+}
+.transparent {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.box {
+  margin: 0 10px;
+  width: 252px;
+  border: 1px solid #E0E0E0;
+  text-align: center;
+  display: inline-block;
+  background: #F9F9F9;
+}
+.box span {
+  font-size: 15px;
+  display: block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 auto;
+  color: #606060;
+}
+.box.over {
+  position: absolute;
+  left: 25%;
+  background: #FFFFFF;
+  top: 50%;
+  height: 115px;
+  font-size: 15px;
+  color: #606060;
+}
+.hidden {
+  display: none;
+}
+.box h2 {
+  background-color: #A4B45C;
+  color: #FFFFFF;
+  display: block;
+  text-align: left;
+  padding: 5px 10px;
+  width: 162px;
+}
+.center {
+  margin: auto;
+  font-size: 0;
+  width: 540px;
+  height: 250px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  text-align: center;
+}
+.clear {
+  height: 5px;
+  width: 1px;
+}
+h1 {
+  font-size: 24px;
+  color: #606060;
+}
+h2 {
+  font-size: 18px;
+  color: #606060;
+}
+.loading {
+  background: url('icons/loading.gif') center 25px no-repeat;
+  padding-top: 60px;
+}
+.mousemv {
+  display: block;
+  width: 130px;
+  height: 100px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 11px;
+}
+.mousemv span.img {
+  background-image: url('icons/move.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+}
+.mousemv span.txt {
+  display: block;
+  margin-top: 10px;
+  background-color: #F0F0F0;
+  padding: 5px;
+  text-align: center;
+  cursor: default;
+}
