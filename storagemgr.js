@@ -6,7 +6,8 @@ var StorageManager = function (file) {
   var index = 0,
     chunkSize = 16000,
     reader = new FileReader(),
-    writer = new Array();//make Uint8Array
+    fileSize = file.size,
+    writer = new Array(); //make Uint8Array
 
   /**
    * Reads the next specific number of bytes, calling the callback when done
@@ -14,10 +15,10 @@ var StorageManager = function (file) {
    * @param {Function} callback - The callback to be called when done
    */
   var readChunk = function (size, callback) {
-    if (index < file.size) {
+    if (index < fileSize) {
       var bSize = size;
-      if (index + size > file.size) {
-        bSize = file.size - index;
+      if (index + size > fileSize) {
+        bSize = fileSize - index;
       }
       reader.onload = function (e) {
         if (reader.readyState === 2) {
@@ -54,15 +55,19 @@ var StorageManager = function (file) {
   };
 
   this.EOF = function () {
-    return (index >= file.size);
+    return (index >= fileSize);
   };
 
-  this.getName = function() {
+  this.getName = function () {
     return file.name;
   };
 
-   this.getSize = function() {
-    return file.size;
+  this.getSize = function () {
+    return fileSize;
+  };
+
+  this.setSize = function (size) {
+    fileSize = size;
   };
 
   /**

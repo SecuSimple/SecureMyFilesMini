@@ -81,6 +81,18 @@ Utils.stringToByteArray = function (string, len) {
   return lengthArray;
 };
 
+Utils.byteArrayToString = function (byteArray) {
+  var string = '';
+  for (var i = 0; i < byteArray.length; i++) {
+    if (byteArray[i] === 0) {
+      continue;
+    }
+
+    string += String.fromCharCode(byteArray[i]);
+  }
+  return string;
+};
+
 Utils.setArray = function (destination, source, offset) {
   for (var i = source.length - 1; i >= 0; i--) {
     destination[offset + i] = source[i];
