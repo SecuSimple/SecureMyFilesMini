@@ -4,10 +4,20 @@
   <script type="text/javascript" src="storagemgr.js"></script>
   <script type="text/javascript" src="utils.js"></script>
   <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript">
+    var secMyFiles = new smf(); 
+    var encrypt = function() {
+      secMyFiles.encryptFile(document.getElementById('file').files[0], document.getElementById('pass').value);
+    };
+    var decrypt = function() {
+      secMyFiles.decryptFile(document.getElementById('file').files[0], document.getElementById('pass').value);
+    };
+  </script>
   <link type="text/css" rel="stylesheet" href="style.css">
 </head><body>
 <input type="file" id="file"/>
-<input type="button" value="Encrypt"/>
-<input type="button" value="Decrypt"/>
+<input type="password" id="pass"/>
+<input type="button" value="Encrypt" onclick="encrypt()"/>
+<input type="button" value="Decrypt" onclick="decrypt()"/>
 </body>
 </html>

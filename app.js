@@ -4,7 +4,7 @@
  */
 var smf = function () {
   var rGen = new Utils.RandomGenerator(),
-    sMan, encryptor;
+    sMan, encryptor, decKey;
 
 
   var applyHeader = function (size, iv) {
@@ -13,6 +13,7 @@ var smf = function () {
   };
 
   var getHeader = function (data) {
+    data = Utils.toArray(data);
     var len = data.slice(0, 16),
       iv = data.slice(16);
 
@@ -30,7 +31,7 @@ var smf = function () {
 
   var doEncryptedDownload = function (block) {
     block = Utils.toArray(block);
-    block = encryptor.encrypt(block);
+    block = encryptor.decrypt(block);
     sMan.store(block);
     readFileDownload();
   };
@@ -61,7 +62,8 @@ var smf = function () {
     readFileUpload();
   };
 
-  this.decryptFile = function (file, decKey) {
+  this.decryptFile = function (file, dKey) {
+    decKey = dKey;
     sMan = new StorageManager(file);
     sMan.readNextLength(32, getHeader);
   };
