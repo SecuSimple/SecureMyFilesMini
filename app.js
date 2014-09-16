@@ -18,7 +18,7 @@ var smf = function () {
       iv = data.slice(16);
 
     encryptor = new Encryptor(Encryptors.AES, decKey, iv, 256);
-    sMan.setSize(parseInt(Utils.byteArrayToString(len), 10));
+    sMan.setSize(parseInt(Utils.byteArrayToString(len), 10) + 32);
     readFileDownload();
   };
 
