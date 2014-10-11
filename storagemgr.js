@@ -7,7 +7,7 @@ var StorageManager = function (file) {
     chunkSize = 16000,
     reader = new FileReader(),
     fileSize = file.size,
-    writer = new Array(); //make Uint8Array
+    writer = []; //make Uint8Array
 
   /**
    * Reads the next specific number of bytes, calling the callback when done
@@ -15,23 +15,25 @@ var StorageManager = function (file) {
    * @param {Function} callback - The callback to be called when done
    */
   var readChunk = function (size, callback) {
-    if (index < fileSize) {
-      var bSize = size;
-      if (index + size > fileSize) {
-        bSize = fileSize - index;
-      }
-      reader.onload = function (e) {
-        if (reader.readyState === 2) {
-          var block = new Uint8Array(reader.result);
-
-          if (typeof callback === 'function') {
-            callback(block);
-          }
-        }
-      };
-      reader.readAsArrayBuffer(file.slice(index, index + bSize));
-      index += bSize;
+    if (index >= fileSize) {
+      return false;
     }
+    var bSize = size;
+    if (index + size > fileSize) {
+      bSize = fileSize - index;
+    }
+    reader.onload = function (e) {
+      if (reader.readyState === 2) {
+        var block = new Uint8Array(reader.result);
+
+        if (typeof callback === 'function') {
+          callback(block);
+        }
+      }
+    };
+    reader.readAsArrayBuffer(file.slice(index, index + bSize));
+    index += bSize;
+    return true;
   };
 
   /**
@@ -39,7 +41,7 @@ var StorageManager = function (file) {
    * @param {Function} callback - The callback to be called when done
    */
   this.readNext = function (callback) {
-    readChunk(chunkSize, callback);
+    return readChunk(chunkSize, callback);
   };
 
   /**
@@ -51,44 +53,37 @@ var StorageManager = function (file) {
     if (!size) {
       throw 'Argument exception: Size zero or not specified.';
     }
-    readChunk(size, callback);
-  };
-
-  this.EOF = function () {
-    return (index >= fileSize);
+    return readChunk(size, callback);
   };
 
   this.getName = function () {
     return file.name;
   };
 
-  this.getSize = function () {
-    return fileSize;
-  };
-
-  this.setSize = function (size) {
-    fileSize = size;
-  };
-
   /**
    * Stores the provided data, calling the callback when done
    * @param {Uint8Array} data - The data to be stored
+   * @param {Boolean} prepend - The data will be prepended
    * @param {Function} callback - The callback to be called when done
    */
-  this.store = function (data, callback) {
-    writer = writer.concat(data);
+  this.store = function (data, prepend, callback) {
+    writer = prepend ? data.concat(writer) : writer.concat(data);
 
     if (typeof callback === 'function') {
-      callback(block);
+      callback();
     }
   };
 
   /**
    * Saves the currently stored data to disk
    */
-  this.saveToDisk = function () {
+  this.saveToDisk = function (length) {
     var saveAs = saveAs || (typeof navigator !== "undefined" &&
       navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator));
+
+    if (length) {
+      writer = writer.slice(0, length);
+    }
 
     var blob = new Blob([Utils.toTypedArray(writer)], {
       type: 'application/octet-stream'

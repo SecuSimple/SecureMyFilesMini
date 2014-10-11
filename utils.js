@@ -93,6 +93,17 @@ Utils.byteArrayToString = function (byteArray) {
   return string;
 };
 
+Utils.extendArray = function (array, length) {
+  if(array.length >= length){
+    return array;
+  }
+  var result = new Array(length);
+  for (var i = 0; i < length; i++) {
+    result[i] = array[i] || 0;
+  }
+  return result;
+};
+
 Utils.setArray = function (destination, source, offset) {
   for (var i = source.length - 1; i >= 0; i--) {
     destination[offset + i] = source[i];

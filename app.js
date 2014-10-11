@@ -4,7 +4,7 @@
  */
 var smf = function () {
   var rGen = new Utils.RandomGenerator(),
-    sMan, encryptor, decKey;
+    sMan, encryptor, decKey, actualLen, checksum;
 
 
   var applyHeader = function (size, iv) {
@@ -14,41 +14,36 @@ var smf = function () {
 
   var getHeader = function (data) {
     data = Utils.toArray(data);
-    var len = data.slice(0, 16),
-      iv = data.slice(16);
+    checksum = Utils.byteArrayToString(data.slice(0, 16));
+    actualLen = Utils.byteArrayToString(data.slice(16, 32));
+    var iv = data.slice(32);
 
     encryptor = new Encryptor(Encryptors.AES, decKey, iv, 256);
-    sMan.setSize(parseInt(Utils.byteArrayToString(len), 10) + 32);
-    readFileDownload();
+    sMan.readNext(doEncryptedDownload);
   };
 
   var doEncryptedUpload = function (block) {
     block = Utils.toArray(block);
     block = encryptor.encrypt(block);
     sMan.store(block);
-    readFileUpload();
+    if (!sMan.readNext(doEncryptedUpload)) {
+      sMan.store(Utils.stringToByteArray(encryptor.getChecksum().toString(), 16), true);
+      sMan.saveToDisk();
+    }
   };
 
   var doEncryptedDownload = function (block) {
     block = Utils.toArray(block);
     block = encryptor.decrypt(block);
     sMan.store(block);
-    readFileDownload();
-  };
-
-  var readFileUpload = function () {
-    if (!sMan.EOF()) {
-      sMan.readNext(doEncryptedUpload);
-    } else {
-      sMan.saveToDisk();
-    }
-  };
-
-  var readFileDownload = function () {
-    if (!sMan.EOF()) {
-      sMan.readNext(doEncryptedDownload);
-    } else {
-      sMan.saveToDisk();
+    if (!sMan.readNext(doEncryptedDownload)) {
+       var computedSum = encryptor.getChecksum().toString();
+       if(computedSum === checksum){
+        sMan.saveToDisk(actualLen);
+       }
+       else {
+        throw 'The file is corrupt.';
+       }
     }
   };
 
@@ -59,12 +54,12 @@ var smf = function () {
     encryptor = new Encryptor(Encryptors.AES, encKey, iv, 256);
 
     applyHeader(file.size.toString(), iv);
-    readFileUpload();
+    sMan.readNext(doEncryptedUpload);
   };
 
   this.decryptFile = function (file, dKey) {
     decKey = dKey;
     sMan = new StorageManager(file);
-    sMan.readNextLength(32, getHeader);
+    sMan.readNextLength(48, getHeader);
   };
 };

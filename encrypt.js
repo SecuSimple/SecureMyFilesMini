@@ -14,7 +14,7 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
     key = new Array(encryptor.keyLength / 8);
 
   encryptor.init();
-  Utils.stringToByteArray(encKey, key, 32);
+  key = Utils.stringToByteArray(encKey, 32);
   encryptor.expandKey(key);
 
   /**
@@ -33,6 +33,7 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
         endIndex = byteArray.length;
       }
       encBlock = byteArray.slice(startIndex, endIndex);
+      encBlock = Utils.extendArray(encBlock, 16);
       checksum = checksum ^ Utils.crc32(encBlock);
       encBlock = Utils.xor(encBlock, prevEncBlock);
 
@@ -73,6 +74,10 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
       startIndex += 16;
     }
     return resultArray;
+  };
+
+  this.getChecksum = function() {
+    return checksum; 
   };
 };
 
