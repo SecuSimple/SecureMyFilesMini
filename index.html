@@ -7,17 +7,35 @@
   <script type="text/javascript">
     var secMyFiles = new smf(); 
     var encrypt = function() {
-      secMyFiles.encryptFile(document.getElementById('file').files[0], document.getElementById('pass').value);
+      document.getElementById('status').style.display = 'block';
+      secMyFiles.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
     var decrypt = function() {
-      secMyFiles.decryptFile(document.getElementById('file').files[0], document.getElementById('pass').value);
+      document.getElementById('status').style.display = 'block';
+      secMyFiles.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
   </script>
   <link type="text/css" rel="stylesheet" href="style.css">
 </head><body>
-<input type="file" id="file"/>
-<input type="password" id="pass"/>
-<input type="button" value="Encrypt" onclick="encrypt()"/>
-<input type="button" value="Decrypt" onclick="decrypt()"/>
+  <div class="center">
+    <h1>Secure My Files</h1>
+    <div class="box">
+      <h2>Protect your files</h2>
+      <div class="btn">
+        <label for="fileBox" id="fileBoxLabel">Choose a file...</label>
+        <input type="file" id="fileBox" class="transparent" />
+      </div>
+      <div class="clear"></div>
+      <input type="password" id="filePass" class="text" placeholder="Input password">
+      <div class="clear"></div>
+      <input type="button" value="Encrypt" class="btn" onclick="setTimeout(encrypt, 0)"/>
+      <div class="clear"></div>
+      <input type="button" value="Decrypt" class="btn" onclick="setTimeout(decrypt, 0)"/>
+      <div class="clear"></div>
+    </div>
+    <div id="status" class="box over hidden">
+      <div class="loading">Working...</div>
+    </div>
+  </div>
 </body>
 </html>

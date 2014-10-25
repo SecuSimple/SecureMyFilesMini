@@ -17,26 +17,12 @@ html, body {
   width: 150px;
   height: 30px;
   font-size: 15px;
-  text-align: center;
+  text-align: left;
   margin: 0 auto;
-  border-left: 10px solid #A4B45C;
+  border-left: 10px solid #819806;
   border-right: 1px solid #E5E5E5;
   cursor: pointer;
   white-space: nowrap;
-}
-.btn.lock {
-  background-image: url('icons/lock.png');
-  background-repeat: no-repeat;
-  margin-left: 50px;
-  border-left: 0;
-  height: 32px;
-}
-.btn.unlock {
-  background-image: url('icons/unlock.png');
-  background-repeat: no-repeat;
-  margin-left: 50px;
-  border-left: 0;
-  height: 32px;
 }
 .btn label {
   cursor: pointer;
@@ -45,22 +31,16 @@ html, body {
   display: inline-block;
   line-height: 26px;
   overflow: hidden;
+  text-align: left;
+  margin-left: 10px;
   text-overflow: ellipsis;
 }
-.btn.lock:disabled {
-  color: #A0A0A0;
-  cursor: default;
-  background-image: url('icons/locklight.png');
-}
-.btn:disabled label {
-  cursor: default;
-}
 input.btn {
-  padding: 5px;
+  padding-left: 10px;
 }
 input.text {
   border-right: 1px solid #E5E5E5;
-  border-left: 10px solid #A4B45C;
+  border-left: 10px solid #819806;
   color: #606060;
   font-size: 15px;
   padding: 5px 10px;
@@ -72,7 +52,6 @@ input.text {
   height: 0;
 }
 .box {
-  margin: 0 10px;
   width: 252px;
   border: 1px solid #E0E0E0;
   text-align: center;
@@ -90,10 +69,9 @@ input.text {
 }
 .box.over {
   position: absolute;
-  left: 25%;
   background: #FFFFFF;
-  top: 50%;
-  height: 115px;
+  bottom: 10px;
+  height: 145px;
   font-size: 15px;
   color: #606060;
 }
@@ -101,18 +79,19 @@ input.text {
   display: none;
 }
 .box h2 {
-  background-color: #A4B45C;
+  background-color: #819806;
   color: #FFFFFF;
   display: block;
   text-align: left;
   padding: 5px 10px;
   width: 162px;
+  -webkit-font-smoothing: antialiased;
 }
 .center {
   margin: auto;
   font-size: 0;
-  width: 540px;
-  height: 250px;
+  width: 252px;
+  height: 280px;
   top: 0;
   left: 0;
   bottom: 0;
@@ -130,11 +109,13 @@ h1 {
 }
 h2 {
   font-size: 18px;
-  color: #606060;
+  color: #FFFFFF;
 }
 .loading {
-  background: url('icons/loading.gif') center 25px no-repeat;
-  padding-top: 60px;
+  background: url('icons/loading.gif') center 40px no-repeat;
+  padding-top: 80px;
+  font-size: 15px;
+  color: #606060;
 }
 .mousemv {
   display: block;
