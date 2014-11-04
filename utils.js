@@ -34,32 +34,19 @@ Utils.crc32 = function (byteArray) {
  * @return {Array[Byte]} The result array
  */
 Utils.xor = function (arr1, arr2) {
-  var result = [];
   for (var i = 0; i < 16; i++) {
-    result[i] = arr1[i] ^ arr2[i];
+    arr1[i] = arr1[i] ^ arr2[i];
   }
-  return result;
-};
-
-/**
- * Transforms a typed array into a regular array
- * @param {TypedArray} typedArray - the array to be copied
- */
-Utils.toArray = function (typedArray) {
-  var result = new Array(typedArray.byteLength);
-  for (var i = typedArray.byteLength - 1; i >= 0; i--) {
-    result[i] = typedArray[i];
-  }
-  return result;
 };
 
 /**
  * Transforms a regular array into a typed array
  * @param {Array} array - the array to be copied
  */
-Utils.toTypedArray = function (array) {
-  var result = new Uint8Array(array.length);
-  for (var i = array.length - 1; i >= 0; i--) {
+Utils.toTypedArray = function (array, length) {
+  var mLen = length ? Math.min(array.length, length) : array.length;
+  var result = new Uint8Array(mLen);
+  for (var i = mLen - 1; i >= 0; i--) {
     result[i] = array[i];
   }
   return result;
@@ -83,7 +70,7 @@ Utils.stringToByteArray = function (string, len) {
 
 Utils.byteArrayToString = function (byteArray) {
   var string = '';
-  for (var i = 0; i < byteArray.length; i++) {
+  for (var i = 0; i < byteArray.byteLength; i++) {
     if (byteArray[i] === 0) {
       continue;
     }

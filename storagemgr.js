@@ -82,11 +82,7 @@ var StorageManager = function (file) {
     var saveAs = saveAs || (typeof navigator !== "undefined" &&
       navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator));
 
-    if (length) {
-      writer = writer.slice(0, length);
-    }
-
-    var blob = new Blob([Utils.toTypedArray(writer)], {
+    var blob = new Blob([Utils.toTypedArray(writer, length)], {
       type: 'application/octet-stream'
     });
 

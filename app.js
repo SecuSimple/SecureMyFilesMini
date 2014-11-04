@@ -12,17 +12,15 @@ var smf = function () {
   };
 
   var getHeader = function (data) {
-    data = Utils.toArray(data);
-    checksum = Utils.byteArrayToString(data.slice(0, 16));
-    actualLen = Utils.byteArrayToString(data.slice(16, 32));
-    var iv = data.slice(32);
+    checksum = Utils.byteArrayToString(data.subarray(0, 16));
+    actualLen = Utils.byteArrayToString(data.subarray(16, 32));
+    var iv = data.subarray(32);
 
     encryptor = new Encryptor(Encryptors.AES, decKey, iv, 256);
     sMan.readNext(doEncryptedDownload);
   };
 
   var doEncryptedUpload = function (block) {
-    //block = Utils.toArray(block);
     block = encryptor.encrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedUpload)) {
@@ -32,7 +30,6 @@ var smf = function () {
   };
 
   var doEncryptedDownload = function (block) {
-    //block = Utils.toArray(block);
     block = encryptor.decrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedDownload)) {
