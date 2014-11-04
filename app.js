@@ -6,7 +6,6 @@ var smf = function () {
   var rGen = new Utils.RandomGenerator(),
     sMan, encryptor, decKey, actualLen, checksum;
 
-
   var applyHeader = function (size, iv) {
     var fileSize = Utils.stringToByteArray(size, 16);
     sMan.store(fileSize.concat(iv));
@@ -23,7 +22,7 @@ var smf = function () {
   };
 
   var doEncryptedUpload = function (block) {
-    block = Utils.toArray(block);
+    //block = Utils.toArray(block);
     block = encryptor.encrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedUpload)) {
@@ -33,7 +32,7 @@ var smf = function () {
   };
 
   var doEncryptedDownload = function (block) {
-    block = Utils.toArray(block);
+    //block = Utils.toArray(block);
     block = encryptor.decrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedDownload)) {
@@ -48,6 +47,7 @@ var smf = function () {
   };
 
   this.encryptFile = function (file, encKey) {
+    window.sw = Date.now();
     var iv = rGen.generate();
 
     sMan = new StorageManager(file);
@@ -58,6 +58,7 @@ var smf = function () {
   };
 
   this.decryptFile = function (file, dKey) {
+    window.sw = Date.now();
     decKey = dKey;
     sMan = new StorageManager(file);
     sMan.readNextLength(48, getHeader);

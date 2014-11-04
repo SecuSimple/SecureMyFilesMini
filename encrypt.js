@@ -19,28 +19,39 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
 
   /**
    * Encrypts the given byte array
-   * @param {Array} byteArray - The typed byte array that needs to be encrypted
+   * @param {Uint8Array} byteArray - The typed byte array that needs to be encrypted
    */
   this.encrypt = function (byteArray) {
     var startIndex = 0,
       endIndex,
+      idx,
+      eidx,
       encBlock,
       resultArray = [];
 
-    while (startIndex < byteArray.length) {
+    while (startIndex < byteArray.byteLength) {
       endIndex = startIndex + 16;
-      if (endIndex > byteArray.length) {
-        endIndex = byteArray.length;
+      if (endIndex > byteArray.byteLength) {
+        endIndex = byteArray.byteLength;
       }
-      encBlock = byteArray.slice(startIndex, endIndex);
-      encBlock = Utils.extendArray(encBlock, 16);
+      encBlock = [];
+      for (eidx = 0, idx = startIndex; idx < endIndex; eidx++, idx++) {
+        encBlock[eidx] = byteArray[idx];
+      }
+      while (eidx < 16) {
+        encBlock[eidx++] = 0;
+      }
       checksum = checksum ^ Utils.crc32(encBlock);
       encBlock = Utils.xor(encBlock, prevEncBlock);
 
       encryptor.encrypt(encBlock, key);
 
       prevEncBlock = encBlock.slice(0);
-      resultArray = resultArray.concat(encBlock);
+
+      for (eidx = 0, idx = resultArray.length; eidx < 16; eidx++, idx++) {
+        resultArray[idx] = encBlock[eidx];
+      }
+
       startIndex += 16;
     }
     return resultArray;
@@ -48,7 +59,7 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
 
   /**
    * Decrypts the given byte array
-   * @param {Array} byteArray - The byte array that needs to be decrypted
+   * @param {Uint8Array} byteArray - The typed byte array that needs to be decrypted
    */
   this.decrypt = function (byteArray) {
     var startIndex = 0,
@@ -57,27 +68,35 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
       blockBefore,
       resultArray = [];
 
-    while (startIndex < byteArray.length) {
+    while (startIndex < byteArray.byteLength) {
       endIndex = startIndex + 16;
-      if (endIndex > byteArray.length) {
-        endIndex = byteArray.length;
+      if (endIndex > byteArray.byteLength) {
+        endIndex = byteArray.byteLength;
       }
-      decBlock = byteArray.slice(startIndex, endIndex);
+
+      decBlock = [];
+      for (eidx = 0, idx = startIndex; idx < endIndex; eidx++, idx++) {
+        decBlock[eidx] = byteArray[idx];
+      }
 
       blockBefore = decBlock.slice(0);
       encryptor.decrypt(decBlock, key);
       decBlock = Utils.xor(decBlock, prevDecBlock);
       checksum = checksum ^ Utils.crc32(decBlock);
 
-      prevDecBlock = blockBefore.slice(0);
-      resultArray = resultArray.concat(decBlock);
+      prevDecBlock = blockBefore;
+
+      for (eidx = 0, idx = resultArray.length; eidx < 16; eidx++, idx++) {
+        resultArray[idx] = decBlock[eidx];
+      }
+
       startIndex += 16;
     }
     return resultArray;
   };
 
-  this.getChecksum = function() {
-    return checksum; 
+  this.getChecksum = function () {
+    return checksum;
   };
 };
 

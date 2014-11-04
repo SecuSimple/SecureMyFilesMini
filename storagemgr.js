@@ -25,9 +25,10 @@ var StorageManager = function (file) {
     reader.onload = function (e) {
       if (reader.readyState === 2) {
         var block = new Uint8Array(reader.result);
-
         if (typeof callback === 'function') {
-          callback(block);
+          setTimeout(function () {
+            callback(block);
+          }, 5);
         }
       }
     };
@@ -89,6 +90,8 @@ var StorageManager = function (file) {
       type: 'application/octet-stream'
     });
 
+    var t = Date.now() - window.sw;
+    console.log('Time taken: ' + t);
     saveAs(blob);
   };
 };
