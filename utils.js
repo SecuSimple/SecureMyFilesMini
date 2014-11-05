@@ -1,30 +1,17 @@
 var Utils = {};
 
-//cached crcTable
-var crcTable;
-
-var createTable = function () {
-  var c;
-  var crcTable = [];
-  for (var n = 0; n < 256; n++) {
-    c = n;
-    for (var k = 0; k < 8; k++) {
-      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
-    }
-    crcTable[n] = c;
+/**
+ * Computes simple checksum of a byte array
+ * @param {Array[Byte]} byteArray - The byte array
+ * @return {Number} The checksum
+ */
+Utils.cksum = function (byteArray) {
+  var res = 0,
+    len = byteArray.length;
+  for (var i = 0; i < len; i++) {
+    res = res * 31 + byteArray[i];
   }
-  return crcTable;
-};
-
-Utils.crc32 = function (byteArray) {
-  var crcTable = crcTable || (crcTable = createTable());
-  var crc = 0 ^ (-1);
-
-  for (var i = 0; i < byteArray.length; i++) {
-    crc = (crc >>> 8) ^ crcTable[(crc ^ byteArray[i]) & 0xFF];
-  }
-
-  return (crc ^ (-1)) >>> 0;
+  return res;
 };
 
 /**
@@ -81,7 +68,7 @@ Utils.byteArrayToString = function (byteArray) {
 };
 
 Utils.extendArray = function (array, length) {
-  if(array.length >= length){
+  if (array.length >= length) {
     return array;
   }
   var result = new Array(length);

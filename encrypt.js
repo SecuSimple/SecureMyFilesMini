@@ -41,7 +41,7 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
       while (eidx < 16) {
         encBlock[eidx++] = 0;
       }
-      //checksum = checksum ^ Utils.crc32(encBlock);
+      checksum = checksum ^ Utils.cksum(encBlock);
       Utils.xor(encBlock, prevEncBlock);
 
       encryptor.encrypt(encBlock, key);
@@ -82,7 +82,7 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
       blockBefore = decBlock.slice(0);
       encryptor.decrypt(decBlock, key);
       Utils.xor(decBlock, prevDecBlock);
-      //checksum = checksum ^ Utils.crc32(decBlock);
+      checksum = checksum ^ Utils.cksum(decBlock);
 
       prevDecBlock = blockBefore;
 
