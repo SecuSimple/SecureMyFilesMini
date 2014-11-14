@@ -39,6 +39,12 @@ Utils.toTypedArray = function (array, length) {
   return result;
 };
 
+/**
+ * Transforms a string into a fixed size byte array
+ * @param {String} string - the string to be transformed
+ * @param {Number} len - the desired destination length
+ * @return {Array} The resulting array padded with 0 at the end
+ */
 Utils.stringToByteArray = function (string, len) {
   if (string.length > len) {
     throw 'String is too large';
@@ -55,6 +61,11 @@ Utils.stringToByteArray = function (string, len) {
   return lengthArray;
 };
 
+/**
+ * Transforms a byte array into string
+ * @param {TypedArray} byteArray - the typed byte array to be transformed
+ * @return {String} The resulting string
+ */
 Utils.byteArrayToString = function (byteArray) {
   var string = '';
   for (var i = 0; i < byteArray.byteLength; i++) {
@@ -67,22 +78,6 @@ Utils.byteArrayToString = function (byteArray) {
   return string;
 };
 
-Utils.extendArray = function (array, length) {
-  if (array.length >= length) {
-    return array;
-  }
-  var result = new Array(length);
-  for (var i = 0; i < length; i++) {
-    result[i] = array[i] || 0;
-  }
-  return result;
-};
-
-Utils.setArray = function (destination, source, offset) {
-  for (var i = source.length - 1; i >= 0; i--) {
-    destination[offset + i] = source[i];
-  }
-};
 
 /**
  * Initializes the random number generator
