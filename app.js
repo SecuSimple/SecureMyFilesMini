@@ -44,7 +44,6 @@ var smf = function () {
   };
 
   this.encryptFile = function (file, encKey) {
-    window.sw = Date.now();
     var iv = rGen.generate();
 
     sMan = new StorageManager(file);
@@ -55,7 +54,6 @@ var smf = function () {
   };
 
   this.decryptFile = function (file, dKey) {
-    window.sw = Date.now();
     decKey = dKey;
     sMan = new StorageManager(file);
     sMan.readNextLength(48, getHeader);

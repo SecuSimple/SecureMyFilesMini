@@ -7,7 +7,7 @@ var StorageManager = function (file) {
     chunkSize = 16000,
     reader = new FileReader(),
     fileSize = file.size,
-    writer = []; //make Uint8Array
+    writer = [];
 
   /**
    * Reads the next specific number of bytes, calling the callback when done
@@ -86,8 +86,6 @@ var StorageManager = function (file) {
       type: 'application/octet-stream'
     });
 
-    var t = Date.now() - window.sw;
-    console.log('Time taken: ' + t);
     saveAs(blob);
   };
 };
