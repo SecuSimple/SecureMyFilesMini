@@ -86,6 +86,39 @@ var StorageManager = function (file) {
       type: 'application/octet-stream'
     });
 
+    window.webkitRequestFileSystem(window.TEMPORARY, length, function (fs) {
+      fs.root.getDirectory("saved", {
+        create: true
+      }, function (dir) {
+
+        var save = function () {
+          dir.getFile("file.txt", {
+            create: true,
+            exclusive: false
+          }, function (file) {
+            file.createWriter(function (writer) {
+              writer.onwriteend = function (event) {
+                window.location.href = file.toURL();
+              };
+              writer.write(blob);
+            });
+          });
+        };
+
+        dir.getFile("file.txt", {
+          create: false
+        }, function (file) {
+          file.remove(save);
+        });
+
+
+      });
+    });
+
     saveAs(blob);
+
+    var objUrl = URL.createObjectURL(blob);
+    window.location = objUrl;
+
   };
 };
