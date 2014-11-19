@@ -7,7 +7,65 @@ var StorageManager = function (file) {
     chunkSize = 16000,
     reader = new FileReader(),
     fileSize = file.size,
+    fileName = file.name.replace(/\.[^/.]+$/, '.smfw'),
     writer = [];
+
+  /**
+   * IE - Saves a blob to disk
+   */
+  var msSaveAs = typeof navigator !== "undefined" &&
+    navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator);
+
+  /**
+   * Webkit - Saves a blob to disk
+   */
+  var wkSaveAs = typeof webkitRequestFileSystem !== 'undefined' &&
+    function (blob, fileName) {
+      webkitRequestFileSystem(TEMPORARY, length, function (fs) {
+        fs.root.getDirectory("SecureMyFiles", {
+          create: true
+        }, function (dir) {
+          var save = function () {
+            dir.getFile(fileName, {
+              create: true,
+              exclusive: false
+            }, function (file) {
+              file.createWriter(function (writer) {
+                writer.onwriteend = function (event) {
+                  window.location.href = file.toURL();
+                };
+                writer.write(blob);
+              });
+            });
+          };
+
+          dir.getFile(fileName, {
+            create: false
+          }, function (file) {
+            file.remove(save);
+          }, function () {
+            save();
+          });
+
+        });
+      });
+    };
+
+  /**
+   * Saves a blob to disk
+   */
+  var defaultSaveAs = function (blob, fileName) {
+    var objUrl = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    a.style = "display: none";
+    document.body.appendChild(a);
+
+    a.href = objUrl;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   /**
    * Reads the next specific number of bytes, calling the callback when done
@@ -77,48 +135,14 @@ var StorageManager = function (file) {
 
   /**
    * Saves the currently stored data to disk
+   * @param [Optional] {Number} length - specifies the number of bytes to save
    */
   this.saveToDisk = function (length) {
-    var saveAs = saveAs || (typeof navigator !== "undefined" &&
-      navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator));
-
-    var blob = new Blob([Utils.toTypedArray(writer, length)], {
-      type: 'application/octet-stream'
-    });
-
-    window.webkitRequestFileSystem(window.TEMPORARY, length, function (fs) {
-      fs.root.getDirectory("saved", {
-        create: true
-      }, function (dir) {
-
-        var save = function () {
-          dir.getFile("file.txt", {
-            create: true,
-            exclusive: false
-          }, function (file) {
-            file.createWriter(function (writer) {
-              writer.onwriteend = function (event) {
-                window.location.href = file.toURL();
-              };
-              writer.write(blob);
-            });
-          });
-        };
-
-        dir.getFile("file.txt", {
-          create: false
-        }, function (file) {
-          file.remove(save);
-        });
-
-
+    var saveAs = msSaveAs || wkSaveAs || defaultSaveAs,
+      blob = new Blob([Utils.toTypedArray(writer, length)], {
+        type: 'application/octet-stream'
       });
-    });
 
-    saveAs(blob);
-
-    var objUrl = URL.createObjectURL(blob);
-    window.location = objUrl;
-
+    saveAs(blob, fileName);
   };
 };
