@@ -9,7 +9,7 @@ var SecureMyFiles = function (success, error) {
     sMan, encryptor;
 
   if(typeof success !== 'function' || typeof error !== 'function') {
-    throw 'Success and Error callbacks are mandatory and must be functions!'
+    throw 'Success and Error callbacks are mandatory and must be functions!';
   }
 
   var doEncryptedUpload = function (block) {

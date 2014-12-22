@@ -7,7 +7,7 @@ var StorageManager = function (file) {
     chunkSize = 16000,
     reader = new FileReader(),
     fileSize = file.size,
-    fileName = file.name.replace(/\.[^/.]+$/, '.smfw'),
+    fileName = file.name,
     writer = [],
     length;
 
@@ -131,12 +131,12 @@ var StorageManager = function (file) {
   };
 
   /**
-  * Sets a specific length to be downloaded
-  * @param {Array[Byte]} len
-  */
-  this.setLength = function(len) {
+   * Sets a specific length to be downloaded
+   * @param {Array[Byte]} len
+   */
+  this.setLength = function (len) {
     length = Utils.byteArrayToString(len);
-  }
+  };
 
   /**
    * Saves the currently stored data to disk
@@ -147,6 +147,7 @@ var StorageManager = function (file) {
         type: 'application/octet-stream'
       });
 
+    fileName = length ? fileName.replace('.smfw', '') : fileName.concat('.smfw');
     saveAs(blob, fileName);
   };
 };

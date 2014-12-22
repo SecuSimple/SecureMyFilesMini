@@ -1,18 +1,15 @@
 <html><head>
   <title>Secure My Files</title>
-  <script type="text/javascript" src="encrypt.js"></script>
-  <script type="text/javascript" src="storagemgr.js"></script>
-  <script type="text/javascript" src="utils.js"></script>
-  <script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="build/securemyfiles.min.js"></script>
   <script type="text/javascript">
-    var smf = new SecureMyFiles(function(){}, function(){}); 
+    var smfInst = new smf(function(){}, function(){}); 
     var encrypt = function() {
       document.getElementById('status').style.display = 'block';
-      smf.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
+      smfInst.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
     var decrypt = function() {
       document.getElementById('status').style.display = 'block';
-      smf.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
+      smfInst.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
   </script>
   <link type="text/css" rel="stylesheet" href="style.css">
