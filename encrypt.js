@@ -5,8 +5,9 @@
  * @param {String} encKey - The encryption key
  * @param {Array[Byte]} iv - The initialization vector
  * @param {Number} keyLength - The encryption key desired length
+ * @param [Optional] {Array[Byte]} readChecksum - The checksum read from file
  */
-var Encryptor = function (Encryptor, encKey, iv, keyLength) {
+var Encryptor = function (Encryptor, encKey, iv, keyLength, readChecksum) {
   var prevEncBlock = iv,
     prevDecBlock = iv,
     checksum = 0,
@@ -95,8 +96,20 @@ var Encryptor = function (Encryptor, encKey, iv, keyLength) {
     return resultArray;
   };
 
+  /**
+   * Returns the checksum
+   * @returns {Array[Byte]} - the checksum as a padded byte array
+   */
   this.getChecksum = function () {
-    return checksum;
+    return Utils.stringToByteArray(checksum.toString(), 16);
+  };
+
+  /**
+   * Validates the checksum
+   * @returns {Boolean} - true if valid, false if not
+   */
+  this.isChecksumValid = function () {
+    return Utils.byteArrayToString(readChecksum) === checksum.toString();
   };
 };
 

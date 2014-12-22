@@ -1,31 +1,24 @@
 /**
  * Main Secure My Files (SMF) class - creates a new SMF object
  * @constructor
+ * @param {Function} success - The success callback
+ * @param {Function} error - The error callback
  */
-var smf = function () {
+var SecureMyFiles = function (success, error) {
   var rGen = new Utils.RandomGenerator(),
-    sMan, encryptor, decKey, actualLen, checksum;
+    sMan, encryptor;
 
-  var applyHeader = function (size, iv) {
-    var fileSize = Utils.stringToByteArray(size, 16);
-    sMan.store(fileSize.concat(iv));
-  };
-
-  var getHeader = function (data) {
-    checksum = Utils.byteArrayToString(data.subarray(0, 16));
-    actualLen = Utils.byteArrayToString(data.subarray(16, 32));
-    var iv = data.subarray(32);
-
-    encryptor = new Encryptor(Encryptors.AES, decKey, iv, 256);
-    sMan.readNext(doEncryptedDownload);
-  };
+  if(typeof success !== 'function' || typeof error !== 'function') {
+    throw 'Success and Error callbacks are mandatory and must be functions!'
+  }
 
   var doEncryptedUpload = function (block) {
     block = encryptor.encrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedUpload)) {
-      sMan.store(Utils.stringToByteArray(encryptor.getChecksum().toString(), 16), true);
+      sMan.store(encryptor.getChecksum(), true);
       sMan.saveToDisk();
+      success();
     }
   };
 
@@ -33,13 +26,12 @@ var smf = function () {
     block = encryptor.decrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedDownload)) {
-       var computedSum = encryptor.getChecksum().toString();
-       if(computedSum === checksum){
-        sMan.saveToDisk(actualLen);
-       }
-       else {
-        throw 'The file is corrupt.';
-       }
+      if (encryptor.isChecksumValid()) {
+        sMan.saveToDisk();
+        success();
+      } else {
+        error('Password incorrect or corrupt input file.');
+      }
     }
   };
 
@@ -48,14 +40,16 @@ var smf = function () {
 
     sMan = new StorageManager(file);
     encryptor = new Encryptor(Encryptors.AES, encKey, iv, 256);
-
-    applyHeader(file.size.toString(), iv);
+    sMan.store(Utils.stringToByteArray(file.size.toString(), 16).concat(iv));
     sMan.readNext(doEncryptedUpload);
   };
 
   this.decryptFile = function (file, dKey) {
-    decKey = dKey;
     sMan = new StorageManager(file);
-    sMan.readNextLength(48, getHeader);
+    sMan.readNextLength(48, function (data) {
+      encryptor = new Encryptor(Encryptors.AES, dKey, data.subarray(32), 256, data.subarray(0, 16));
+      sMan.setLength(data.subarray(16, 32));
+      sMan.readNext(doEncryptedDownload);
+    });
   };
 };

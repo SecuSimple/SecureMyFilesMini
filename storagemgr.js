@@ -8,7 +8,8 @@ var StorageManager = function (file) {
     reader = new FileReader(),
     fileSize = file.size,
     fileName = file.name.replace(/\.[^/.]+$/, '.smfw'),
-    writer = [];
+    writer = [],
+    length;
 
   /**
    * IE - Saves a blob to disk
@@ -134,10 +135,17 @@ var StorageManager = function (file) {
   };
 
   /**
+  * Sets a specific length to be downloaded
+  * @param {Array[Byte]} len
+  */
+  this.setLength = function(len) {
+    length = Utils.byteArrayToString(len);
+  }
+
+  /**
    * Saves the currently stored data to disk
-   * @param [Optional] {Number} length - specifies the number of bytes to save
    */
-  this.saveToDisk = function (length) {
+  this.saveToDisk = function () {
     var saveAs = msSaveAs || wkSaveAs || defaultSaveAs,
       blob = new Blob([Utils.toTypedArray(writer, length)], {
         type: 'application/octet-stream'

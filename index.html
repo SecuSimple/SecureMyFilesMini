@@ -5,14 +5,14 @@
   <script type="text/javascript" src="utils.js"></script>
   <script type="text/javascript" src="app.js"></script>
   <script type="text/javascript">
-    var secMyFiles = new smf(); 
+    var smf = new SecureMyFiles(function(){}, function(){}); 
     var encrypt = function() {
       document.getElementById('status').style.display = 'block';
-      secMyFiles.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
+      smf.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
     var decrypt = function() {
       document.getElementById('status').style.display = 'block';
-      secMyFiles.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
+      smf.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
     };
   </script>
   <link type="text/css" rel="stylesheet" href="style.css">
