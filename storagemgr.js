@@ -116,10 +116,6 @@ var StorageManager = function (file) {
     return readChunk(size, callback);
   };
 
-  this.getName = function () {
-    return file.name;
-  };
-
   /**
    * Stores the provided data, calling the callback when done
    * @param {Uint8Array} data - The data to be stored
