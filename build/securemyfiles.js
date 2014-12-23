@@ -301,7 +301,7 @@
    */
   var StorageManager = function (file) {
     var index = 0,
-      chunkSize = 16000,
+      chunkSize = 160000,
       reader = new FileReader(),
       fileSize = file.size,
       fileName = file.name,
@@ -425,6 +425,14 @@
       if (typeof callback === 'function') {
         callback();
       }
+    };
+
+    /**
+     * Gets the file length
+     * @return {Number} The file length
+     */
+    this.getLength = function(){
+      return fileSize;
     };
 
     /**
@@ -591,15 +599,16 @@
    * @param {Function} success - The success callback
    * @param {Function} error - The error callback
    */
-  var SecureMyFiles = function (success, error) {
+  var SecureMyFiles = function (success, error, progress) {
     var rGen = new Utils.RandomGenerator(),
       sMan, encryptor;
 
-    if(typeof success !== 'function' || typeof error !== 'function') {
+    if (typeof success !== 'function' || typeof error !== 'function') {
       throw 'Success and Error callbacks are mandatory and must be functions!';
     }
 
     var doEncryptedUpload = function (block) {
+      handleProgress(block.byteLength);
       block = encryptor.encrypt(block);
       sMan.store(block);
       if (!sMan.readNext(doEncryptedUpload)) {
@@ -610,6 +619,7 @@
     };
 
     var doEncryptedDownload = function (block) {
+      handleProgress(block.byteLength);
       block = encryptor.decrypt(block);
       sMan.store(block);
       if (!sMan.readNext(doEncryptedDownload)) {
@@ -619,6 +629,12 @@
         } else {
           error('Password incorrect or corrupt input file.');
         }
+      }
+    };
+
+    var handleProgress = function (processed) {
+      if (typeof progress === 'function') {
+        progress(processed, sMan.getLength());
       }
     };
 
@@ -640,7 +656,6 @@
       });
     };
   };
-
 
   //exposing the namespace
   if (typeof exports !== 'undefined') { //exports

@@ -1,38 +1,41 @@
 <html><head>
   <title>Secure My Files</title>
   <script type="text/javascript" src="build/securemyfiles.min.js"></script>
-  <script type="text/javascript">
-    var smfInst = new smf(function(){}, function(){}); 
-    var encrypt = function() {
-      document.getElementById('status').style.display = 'block';
-      smfInst.encryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
-    };
-    var decrypt = function() {
-      document.getElementById('status').style.display = 'block';
-      smfInst.decryptFile(document.getElementById('fileBox').files[0], document.getElementById('filePass').value);
-    };
-  </script>
   <link type="text/css" rel="stylesheet" href="style.css">
 </head><body>
   <div class="center">
-    <h1>Secure My Files</h1>
+    <h1>Secure My Files Mini</h1>
     <div class="box">
-      <h2>Protect your files</h2>
-      <div class="btn">
-        <label for="fileBox" id="fileBoxLabel">Choose a file...</label>
-        <input type="file" id="fileBox" class="transparent" />
+      <h2 id="hlabel">Add some files to begin</h2>
+      <div id="screen1" class="screen">
+        <div class="btnimg big img open" title="Browse">
+          <label for="fileBox" id="fileBoxLabel"></label>
+          <input type="file" id="fileBox" class="transparent" />
+        </div>
+        <div class="clear"></div>
+        <h3>Drop some files here or browse...</h3>
+        <div class="clear"></div>
+        <div class="clear"></div>
       </div>
-      <div class="clear"></div>
-      <input type="password" id="filePass" class="text" placeholder="Input password">
-      <div class="clear"></div>
-      <input type="button" value="Encrypt" class="btn" onclick="setTimeout(encrypt, 0)"/>
-      <div class="clear"></div>
-      <input type="button" value="Decrypt" class="btn" onclick="setTimeout(decrypt, 0)"/>
-      <div class="clear"></div>
-    </div>
-    <div id="status" class="box over hidden">
-      <div class="loading">Working...</div>
+      <div id="screen2" class="screen hidden">
+        <input type="text" id="fileName" class="text" value="" readonly="readonly" />
+        <div class="clear"></div>
+        <input type="password" id="filePass" class="text" placeholder="Enter password:"/>
+        <h3 id='errh' class="hidden">Drop some files here or browse...</h3>
+        <div class="clear"></div>
+        <div class="clear"></div>
+
+        <input type="button" title="Encrypt" class="btnimg img lock" onclick="setTimeout(encrypt, 0)"/>
+        <div class="clear-horizontal"></div>
+        <input type="button" title="Decrypt" class="btnimg img unlock" onclick="setTimeout(decrypt, 0)"/>
+        <div class="clear"></div>
+      </div>
+      <div id="status" class="screen hidden wait">
+        <div class="progressbar"><div class="thumb" id="progressThumb"></div></div>
+        <div class="loading">Please wait...</div>
+      </div>
     </div>
   </div>
+  <script type="text/javascript" src="script.js"></script>
 </body>
 </html>

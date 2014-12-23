@@ -4,7 +4,7 @@
  */
 var StorageManager = function (file) {
   var index = 0,
-    chunkSize = 16000,
+    chunkSize = 160000,
     reader = new FileReader(),
     fileSize = file.size,
     fileName = file.name,
@@ -128,6 +128,14 @@ var StorageManager = function (file) {
     if (typeof callback === 'function') {
       callback();
     }
+  };
+
+  /**
+   * Gets the file length
+   * @return {Number} The file length
+   */
+  this.getLength = function(){
+    return fileSize;
   };
 
   /**

@@ -4,15 +4,16 @@
  * @param {Function} success - The success callback
  * @param {Function} error - The error callback
  */
-var SecureMyFiles = function (success, error) {
+var SecureMyFiles = function (success, error, progress) {
   var rGen = new Utils.RandomGenerator(),
     sMan, encryptor;
 
-  if(typeof success !== 'function' || typeof error !== 'function') {
+  if (typeof success !== 'function' || typeof error !== 'function') {
     throw 'Success and Error callbacks are mandatory and must be functions!';
   }
 
   var doEncryptedUpload = function (block) {
+    handleProgress(block.byteLength);
     block = encryptor.encrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedUpload)) {
@@ -23,6 +24,7 @@ var SecureMyFiles = function (success, error) {
   };
 
   var doEncryptedDownload = function (block) {
+    handleProgress(block.byteLength);
     block = encryptor.decrypt(block);
     sMan.store(block);
     if (!sMan.readNext(doEncryptedDownload)) {
@@ -32,6 +34,12 @@ var SecureMyFiles = function (success, error) {
       } else {
         error('Password incorrect or corrupt input file.');
       }
+    }
+  };
+
+  var handleProgress = function (processed) {
+    if (typeof progress === 'function') {
+      progress(processed, sMan.getLength());
     }
   };
 

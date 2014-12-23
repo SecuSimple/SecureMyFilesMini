@@ -24,16 +24,11 @@ html, body {
   cursor: pointer;
   white-space: nowrap;
 }
-.btn label {
+.btnimg label {
   cursor: pointer;
-  width: 140px;
-  height: 30px;
+  width: 100%;
+  height: 100%;
   display: inline-block;
-  line-height: 26px;
-  overflow: hidden;
-  text-align: left;
-  margin-left: 10px;
-  text-overflow: ellipsis;
 }
 input.btn {
   padding-left: 10px;
@@ -44,7 +39,7 @@ input.text {
   color: #606060;
   font-size: 15px;
   padding: 5px 10px;
-  width: 150px;
+  width: 200px;
 }
 .transparent {
   opacity: 0;
@@ -52,7 +47,7 @@ input.text {
   height: 0;
 }
 .box {
-  width: 252px;
+  width: 282px;
   border: 1px solid #E0E0E0;
   text-align: center;
   display: inline-block;
@@ -84,13 +79,14 @@ input.text {
   display: block;
   text-align: left;
   padding: 5px 10px;
-  width: 162px;
+  width: 210px;
+  cursor: default;
   -webkit-font-smoothing: antialiased;
 }
 .center {
   margin: auto;
   font-size: 0;
-  width: 252px;
+  width: 282px;
   height: 280px;
   top: 0;
   left: 0;
@@ -111,9 +107,15 @@ h2 {
   font-size: 18px;
   color: #FFFFFF;
 }
+h3 {
+  font-size: 14px;
+  color: #808080;
+  font-weight: 400;
+}
 .loading {
-  padding-top: 80px;
-  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
   color: #606060;
 }
 .mousemv {
@@ -141,4 +143,60 @@ h2 {
   padding: 5px;
   text-align: center;
   cursor: default;
+}
+.haserror {
+  border-left-color: #D6513C !important;
+}
+.haserrorh {
+  background-color: #D6513C !important;
+}
+.img {
+  background-image: url('icons.png');
+  background-repeat: no-repeat;
+}
+.lock {
+  background-position: 5px 5px;
+}
+.open {
+  background-position: 11px -40px;
+}
+.unlock {
+  background-position: -26px 5px;
+}
+.btnimg {
+  border-radius: 21px;
+  width: 42px;
+  height: 42px;
+  display: inline-block;
+  background-color: #819806;
+  cursor: pointer;
+}
+.btnimg:hover {
+  background-color: #95AD13;
+}
+.btnimg.big {
+  border-radius: 46px;
+  width: 92px;
+  height: 92px;
+}
+.btnimg.big:hover {
+  background-color: #95AD13;
+}
+.clear-horizontal {
+  height: 1px;
+  width: 5px;
+  display: inline-block;
+}
+.progressbar {
+  height: 8px;
+  margin-top: 10px;
+  background-color: #F0F0F0;
+}
+.progressbar .thumb {
+  background-color: #819806;
+  height: 8px;
+  width: 0;
+}
+.wait {
+  cursor: wait;
 }
