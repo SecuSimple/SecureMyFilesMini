@@ -58,6 +58,7 @@
     processed = 0;
     progressThumb.style.width = 0;
     filePass.value = '';
+    screen2.style.display = 'block';
     status.style.display = 'none';
     errh.style.display = 'block';
     hlabel.innerHTML = 'Error!';
@@ -83,7 +84,7 @@
       return false;
     }
     return true;
-  }
+  };
 
   var smfInst = new smf(success, error, handleProgress);
   fileBox.addEventListener('change', fileOnChange);

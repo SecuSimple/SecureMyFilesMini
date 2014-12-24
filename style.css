@@ -200,3 +200,18 @@ h3 {
 .wait {
   cursor: wait;
 }
+.absright {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.mouse {
+  width: 52px;
+  height: 52px;
+  border-radius: 26px;
+  background-color: #F5F5F5;
+  border: 1px solid #E5E5E5;
+  background-image: url('icons.png');
+  background-repeat: no-repeat;
+  background-position: -62px 7px;
+}

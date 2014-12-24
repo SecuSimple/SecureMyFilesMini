@@ -32,7 +32,7 @@ var SecureMyFiles = function (success, error, progress) {
         sMan.saveToDisk();
         success();
       } else {
-        error('Password incorrect or corrupt input file.');
+        error(1);
       }
     }
   };
