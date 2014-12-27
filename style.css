@@ -87,7 +87,7 @@ input.text {
   margin: auto;
   font-size: 0;
   width: 282px;
-  height: 280px;
+  height: 240px;
   top: 0;
   left: 0;
   bottom: 0;
@@ -214,4 +214,30 @@ h3 {
   background-image: url('icons.png');
   background-repeat: no-repeat;
   background-position: -62px 7px;
+}
+.close {
+  background-position: -108px 3px;
+}
+.dropzone {
+  display: none;
+  border: 4px dashed #819806 !important;
+  cursor: copy;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: #F5F5F5;
+}
+.dropbg {
+  background-image: url('icons.png');
+  background-repeat: no-repeat;
+  background-position: -92px -60px;
+  width: 80px;
+  height: 100px;
+  display: inline-block;
+  margin-top: 40px;
+  text-align: center;
+}
+.dropzone h3 {
+  font-size: 20px;
+  color: #A0A0A0;
 }

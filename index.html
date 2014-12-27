@@ -3,10 +3,14 @@
   <script type="text/javascript" src="build/securemyfiles.min.js"></script>
   <link type="text/css" rel="stylesheet" href="style.css">
 </head><body>
-  <div class="absright mouse" title="Mouse positions are tracked to build entropy"></div>
+  <div class="absright mouse" title="Mouse positions are tracked locally to build entropy"></div>
   <div class="center">
     <h1>Secure My Files Mini</h1>
-    <div class="box">
+    <div class="box dropzone" id="dropzone">
+      <div class="dropbg"></div>
+      <h3>Drop files here</h3>
+    </div>
+    <div class="box" id="box">
       <h2 id="hlabel">Add some files to begin</h2>
       <div id="screen1" class="screen">
         <div class="btnimg big img open" title="Browse">
@@ -25,10 +29,14 @@
         <h3 id='errh' class="hidden">Drop some files here or browse...</h3>
         <div class="clear"></div>
         <div class="clear"></div>
+        <div class="clear"></div>
 
+        <input type="button" class="btnimg img close" title="Back" onclick="goBack()"/>
+        <div class="clear-horizontal"></div>
         <input type="button" title="Encrypt" class="btnimg img lock" onclick="setTimeout(encrypt, 0)"/>
         <div class="clear-horizontal"></div>
         <input type="button" title="Decrypt" class="btnimg img unlock" onclick="setTimeout(decrypt, 0)"/>
+        <div class="clear"></div>
         <div class="clear"></div>
       </div>
       <div id="status" class="screen hidden wait">

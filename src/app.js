@@ -19,6 +19,8 @@ var SecureMyFiles = function (success, error, progress) {
     if (!sMan.readNext(doEncryptedUpload)) {
       sMan.store(encryptor.getChecksum(), true);
       sMan.saveToDisk();
+      sMan = null;
+      encryptor = null;
       success();
     }
   };
@@ -30,6 +32,8 @@ var SecureMyFiles = function (success, error, progress) {
     if (!sMan.readNext(doEncryptedDownload)) {
       if (encryptor.isChecksumValid()) {
         sMan.saveToDisk();
+        sMan = null;
+        encryptor = null;
         success();
       } else {
         error(1);

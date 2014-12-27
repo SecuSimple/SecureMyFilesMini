@@ -362,7 +362,9 @@
       a.href = objUrl;
       a.download = fileName;
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(function () {
+        URL.revokeObjectURL(objUrl);
+      }, 0);
     };
 
     /**
@@ -431,7 +433,7 @@
      * Gets the file length
      * @return {Number} The file length
      */
-    this.getLength = function(){
+    this.getLength = function () {
       return fileSize;
     };
 
@@ -614,6 +616,8 @@
       if (!sMan.readNext(doEncryptedUpload)) {
         sMan.store(encryptor.getChecksum(), true);
         sMan.saveToDisk();
+        sMan = null;
+        encryptor = null;
         success();
       }
     };
@@ -625,6 +629,8 @@
       if (!sMan.readNext(doEncryptedDownload)) {
         if (encryptor.isChecksumValid()) {
           sMan.saveToDisk();
+          sMan = null;
+          encryptor = null;
           success();
         } else {
           error(1);

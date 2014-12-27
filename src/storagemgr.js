@@ -65,7 +65,9 @@ var StorageManager = function (file) {
     a.href = objUrl;
     a.download = fileName;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(function () {
+      URL.revokeObjectURL(objUrl);
+    }, 0);
   };
 
   /**
@@ -134,7 +136,7 @@ var StorageManager = function (file) {
    * Gets the file length
    * @return {Number} The file length
    */
-  this.getLength = function(){
+  this.getLength = function () {
     return fileSize;
   };
 
