@@ -30,6 +30,9 @@ html, body {
   height: 100%;
   display: inline-block;
 }
+.inline {
+  display: inline-block;
+}
 input.btn {
   padding-left: 10px;
 }
@@ -87,7 +90,7 @@ input.text {
   margin: auto;
   font-size: 0;
   width: 282px;
-  height: 240px;
+  height: 280px;
   top: 0;
   left: 0;
   bottom: 0;
@@ -117,32 +120,6 @@ h3 {
   margin-bottom: 10px;
   font-size: 18px;
   color: #606060;
-}
-.mousemv {
-  display: block;
-  width: 130px;
-  height: 100px;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  font-size: 11px;
-}
-.mousemv span.img {
-  background-image: url('icons/move.png');
-  background-position: center center;
-  background-repeat: no-repeat;
-  display: block;
-  width: 32px;
-  height: 32px;
-  margin: 0 auto;
-}
-.mousemv span.txt {
-  display: block;
-  margin-top: 10px;
-  background-color: #F0F0F0;
-  padding: 5px;
-  text-align: center;
-  cursor: default;
 }
 .haserror {
   border-left-color: #D6513C !important;
@@ -201,7 +178,7 @@ h3 {
   cursor: wait;
 }
 .absright {
-  position: absolute;
+  position: absolute !important;
   right: 10px;
   top: 10px;
 }
@@ -240,4 +217,70 @@ h3 {
 .dropzone h3 {
   font-size: 20px;
   color: #A0A0A0;
+}
+.tooltip {
+  display: none;
+  border-radius: 3px;
+  background-color: #606060;
+  color: #FFFFFF;
+  position: absolute;
+  font-size: 12px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+.tooltip.bottom {
+  bottom: -32px;
+  width: 90px;
+  left: 50%;
+  margin-left: -45px;
+}
+.tooltip.left {
+  right: 60px;
+  top: 12px;
+}
+.tooltip:after, .tooltip:before {
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.tooltip.bottom:after, .tooltip.bottom:before {
+  bottom: 99%;
+  left: 50%;
+}
+.tooltip.left:after, .tooltip.left:before {
+  left: 99%;
+  top: 50%;
+}
+.tooltip.bottom:after {
+  border-color: transparent;
+  border-bottom-color: #606060;
+  border-width: 5px;
+  margin-left: -5px;
+}
+.tooltip.bottom:before {
+  border-color: transparent;
+  border-bottom-color: #606060;
+  border-width: 6px;
+  margin-left: -6px;
+}
+.tooltip.left:after {
+  border-color: transparent;
+  border-left-color: #606060;
+  border-width: 5px;
+  margin-top: -5px;
+}
+.tooltip.left:before {
+  border-color: transparent;
+  border-left-color: #606060;
+  border-width: 6px;
+  margin-top: -6px;
+}
+.hastooltip {
+  position: relative;
+}
+.hastooltip:hover .tooltip {
+  display: block;
 }

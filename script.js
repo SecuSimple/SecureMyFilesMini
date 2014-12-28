@@ -23,6 +23,8 @@
     fileToProtect = null;
     filePass.value = '';
     fileName.value = '';
+    hlabel.removeAttribute('class');
+    filePass.setAttribute('class', 'text');
     status.style.display = 'none';
     screen2.style.display = 'none';
     screen1.style.display = 'block';
@@ -78,8 +80,6 @@
     hlabel.innerHTML = 'Done. Protect more files';
     errh.style.display = 'none';
     progressThumb.style.width = 0;
-    filePass.setAttribute('class', 'text');
-    hlabel.removeAttribute('class');
   };
 
   var error = function (code) {
