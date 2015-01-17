@@ -35,7 +35,8 @@ To use it as a library, you can use the working example below:
 </head><body>
 File: <input type='file' id='file'/>
 Pass: <input type='text' id='pass'/>
-<input type='button' value='Encrypt' onclick='encrypt()'/><input type='button' value='Decrypt' onclick='decrypt()'/>
+<input type='button' value='Encrypt' onclick='encrypt()'/>
+<input type='button' value='Decrypt' onclick='decrypt()'/>
 <script type="text/javascript">
 function success() {
   alert('Operation completed successfully')
