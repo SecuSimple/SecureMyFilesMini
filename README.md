@@ -28,7 +28,7 @@ smfInst.encryptFile(fileToProtect, filePass);
 smfInst.decryptFile(fileToProtect, filePass);
 ```
 
-To use it as a library, you can use the working example below:
+You can also try out the working example below:
 ```html  
 <html><head>
 <script type="text/javascript" src="build/securemyfiles.min.js"></script>
@@ -39,10 +39,13 @@ Pass: <input type='text' id='pass'/>
 <input type='button' value='Decrypt' onclick='decrypt()'/>
 <script type="text/javascript">
 function success() {
-  alert('Operation completed successfully')
+  alert('Operation completed successfully');
+}
+function error() {
+  alert('Operation failed');
 }
 
-var smfInst = new smf(success);
+var smfInst = new smf(success, error);
 
 function encrypt() {
   var fileToProtect = document.getElementById('file').files[0],
