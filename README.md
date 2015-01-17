@@ -11,25 +11,25 @@ You can deploy the sources available here on your own server. Everything is stat
 
 ####As a library
 It's simple to use SMF as a library. You first need to include the JavaScript script into the page.
-```
+```html
 <script type="text/javascript" src="build/securemyfiles.min.js"></script>
 ```
 Then you need to instantiate SMF 
-```
+```js
 var smfInst = new smf(successFunction, errorFunction, progressFunction);
 ```
 You can encrypt or decrypt a file, providing a password:
 #####Encryption
-```
+```js
 smfInst.encryptFile(fileToProtect, filePass);
 ```
 #####Decryption
-```
+```js
 smfInst.decryptFile(fileToProtect, filePass);
 ```
 
 To use it as a library, you can use the working example below:
-```  
+```html  
 <html><head>
 <script type="text/javascript" src="build/securemyfiles.min.js"></script>
 </head><body>
