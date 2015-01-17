@@ -284,3 +284,13 @@ h3 {
 .hastooltip:hover .tooltip {
   display: block;
 }
+.logo {
+  background-image: url('logo.png');
+  background-repeat: no-repeat;
+  width: 100px;
+  height: 24px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+}
