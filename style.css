@@ -294,6 +294,16 @@ h3 {
   right: 10px;
   cursor: pointer;
 }
+.gitlogo {
+  background-image: url('git.png');
+  background-repeat: no-repeat;
+  width: 100px;
+  height: 24px;
+  position: absolute;
+  bottom: 8px;
+  right: 100px;
+  cursor: pointer;
+}
 .bottom {
   position: absolute;
   bottom: 10px;
