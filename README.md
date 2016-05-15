@@ -3,6 +3,11 @@ Secure My Files Mini
 Secure My Files Mini, or SMF is a JavaScript library for securing documents using end-to-end encryption in the browser.
 SMF is using symmetric encryption algorithms (AES with a 256-bit cypher) to encrypt and decrypt files.
 
+##Downloads
+
+Download the source code or just the build output here:
+- https://github.com/SecuSimple/SecureMyFilesMini/releases
+
 ##Usage
 
 ####As an application
@@ -28,7 +33,7 @@ smfInst.encryptFile(fileToProtect, filePass);
 smfInst.decryptFile(fileToProtect, filePass);
 ```
 
-To use it as a library, you can use the working example below:
+You can also try out the working example below:
 ```html  
 <html><head>
 <script type="text/javascript" src="build/securemyfiles.min.js"></script>
@@ -39,10 +44,13 @@ Pass: <input type='text' id='pass'/>
 <input type='button' value='Decrypt' onclick='decrypt()'/>
 <script type="text/javascript">
 function success() {
-  alert('Operation completed successfully')
+  alert('Operation completed successfully');
+}
+function error() {
+  alert('Operation failed');
 }
 
-var smfInst = new smf(success);
+var smfInst = new smf(success, error);
 
 function encrypt() {
   var fileToProtect = document.getElementById('file').files[0],
