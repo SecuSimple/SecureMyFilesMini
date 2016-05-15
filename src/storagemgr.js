@@ -149,6 +149,13 @@ var StorageManager = function (file) {
   };
 
   /**
+   * Returns the final data
+   */
+  this.getData = function () {
+    return Utils.toTypedArray(writer, length);
+  };
+
+  /**
    * Saves the currently stored data to disk
    */
   this.saveToDisk = function () {

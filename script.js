@@ -133,7 +133,7 @@
     return true;
   };
 
-  var smfInst = new smf(success, error, handleProgress);
+  var smfInst = new smf(success, error, handleProgress, true);
   fileBox.addEventListener('change', fileOnChange);
   dropzone.addEventListener('dragover', onDragOver);
   window.addEventListener('dragenter', onDragEnter);

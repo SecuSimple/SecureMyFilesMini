@@ -4,7 +4,7 @@
  * @param {Function} success - The success callback
  * @param {Function} error - The error callback
  */
-var SecureMyFiles = function (success, error, progress) {
+var SecureMyFiles = function (success, error, progress, saveOnDisk) {
   var rGen = new Utils.RandomGenerator(),
     sMan, encryptor;
 
@@ -18,10 +18,13 @@ var SecureMyFiles = function (success, error, progress) {
     sMan.store(block);
     if (!sMan.readNext(doEncryptedUpload)) {
       sMan.store(encryptor.getChecksum(), true);
-      sMan.saveToDisk();
+      if (saveOnDisk) {
+        sMan.saveToDisk();
+      }
+      var response = sMan.getData();
       sMan = null;
       encryptor = null;
-      success();
+      success(response);
     }
   };
 
@@ -31,10 +34,13 @@ var SecureMyFiles = function (success, error, progress) {
     sMan.store(block);
     if (!sMan.readNext(doEncryptedDownload)) {
       if (encryptor.isChecksumValid()) {
-        sMan.saveToDisk();
+        if (saveOnDisk) {
+          sMan.saveToDisk();
+        }
+        var response = sMan.getData();
         sMan = null;
         encryptor = null;
-        success();
+        success(response);
       } else {
         error(1);
       }
