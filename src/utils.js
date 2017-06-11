@@ -1,30 +1,5 @@
 var Utils = {};
 
-/**
- * Computes simple checksum of a byte array
- * @param {Array[Byte]} byteArray - The byte array
- * @return {Number} The checksum
- */
-Utils.cksum = function (byteArray) {
-  var res = 0,
-    len = byteArray.length;
-  for (var i = 0; i < len; i++) {
-    res = res * 31 + byteArray[i];
-  }
-  return res;
-};
-
-/**
- * Applies XOR on two arrays having a fixed length of 16 bytes.
- * @param {Array[Byte]} arr1 - The first array
- * @param {Array[Byte]} arr2 - The second array
- * @return {Array[Byte]} The result array
- */
-Utils.xor = function (arr1, arr2) {
-  for (var i = 0; i < 16; i++) {
-    arr1[i] = arr1[i] ^ arr2[i];
-  }
-};
 
 /**
  * Transforms a regular array into a typed array
@@ -43,7 +18,7 @@ Utils.toTypedArray = function (array, length) {
  * Transforms a string into a fixed size byte array
  * @param {String} string - the string to be transformed
  * @param {Number} len - the desired destination length
- * @return {Array} The resulting array padded with 0 at the end
+ * @returns {Array} The resulting array padded with 0 at the end
  */
 Utils.stringToByteArray = function (string, len) {
   if (string.length > len) {
@@ -64,7 +39,7 @@ Utils.stringToByteArray = function (string, len) {
 /**
  * Transforms a byte array into string
  * @param {TypedArray} byteArray - the typed byte array to be transformed
- * @return {String} The resulting string
+ * @returns {String} The resulting string
  */
 Utils.byteArrayToString = function (byteArray) {
   var string = '';
@@ -134,3 +109,6 @@ Utils.RandomGenerator = function () {
 
   checkEvents();
 };
+
+//exports
+module.exports = Utils;

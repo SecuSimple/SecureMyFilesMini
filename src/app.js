@@ -1,73 +1,77 @@
-/**
+var supercrypt = require('../lib/supercrypt');
+var StorageManager = require('./storagemgr');
+var Utils = require('./utils');
+
+/** 
  * Main Secure My Files (SMF) class - creates a new SMF object
  * @constructor
  * @param {Function} success - The success callback
  * @param {Function} error - The error callback
  */
 var SecureMyFiles = function (success, error, progress, saveOnDisk) {
-  var rGen = new Utils.RandomGenerator(),
-    sMan, encryptor;
+    var rGen = new Utils.RandomGenerator(),
+        sMan,
+        encryptor;
 
-  if (typeof success !== 'function' || typeof error !== 'function') {
-    throw 'Success and Error callbacks are mandatory and must be functions!';
-  }
-
-  var doEncryptedUpload = function (block) {
-    handleProgress(block.byteLength);
-    block = encryptor.encrypt(block);
-    sMan.store(block);
-    if (!sMan.readNext(doEncryptedUpload)) {
-      sMan.store(encryptor.getChecksum(), true);
-      if (saveOnDisk) {
-        sMan.saveToDisk();
-      }
-      var response = sMan.getData();
-      sMan = null;
-      encryptor = null;
-      success(response);
+    if (typeof success !== 'function' || typeof error !== 'function') {
+        throw 'Success and Error callbacks are mandatory and must be functions!';
     }
-  };
 
-  var doEncryptedDownload = function (block) {
-    handleProgress(block.byteLength);
-    block = encryptor.decrypt(block);
-    sMan.store(block);
-    if (!sMan.readNext(doEncryptedDownload)) {
-      if (encryptor.isChecksumValid()) {
-        if (saveOnDisk) {
-          sMan.saveToDisk();
+    var handleProgress = function (processed) {
+        if (typeof progress === 'function') {
+            progress(processed, sMan.getLength());
         }
-        var response = sMan.getData();
-        sMan = null;
-        encryptor = null;
-        success(response);
-      } else {
-        error(1);
-      }
-    }
-  };
+    };
 
-  var handleProgress = function (processed) {
-    if (typeof progress === 'function') {
-      progress(processed, sMan.getLength());
-    }
-  };
+    var handleFinish = function (addExt) {
+        sMan.saveToDisk(addExt);
+    };
 
-  this.encryptFile = function (file, encKey) {
-    var iv = rGen.generate();
+    var computeOutputLength = function (size, chunkSize) {
+        //add IV and MAC to the file size
+        var finalLength = size + 48;
 
-    sMan = new StorageManager(file);
-    encryptor = new Encryptor(Encryptors.AES, encKey, iv, 256);
-    sMan.store(Utils.stringToByteArray(file.size.toString(), 16).concat(iv));
-    sMan.readNext(doEncryptedUpload);
-  };
+        //add fixed 16B padding on intermediary blocks
+        finalLength += Math.floor(size / chunkSize) * 16;
 
-  this.decryptFile = function (file, dKey) {
-    sMan = new StorageManager(file);
-    sMan.readNextLength(48, function (data) {
-      encryptor = new Encryptor(Encryptors.AES, dKey, data.subarray(32), 256, data.subarray(0, 16));
-      sMan.setLength(data.subarray(16, 32));
-      sMan.readNext(doEncryptedDownload);
-    });
-  };
+        //add padding for the last block
+        finalLength += 16 - (size % 16);
+
+        return finalLength;
+    };
+
+    this.encryptFile = function (file, key) {
+        var seedList = [],//TODO use random generator
+            chunkSize = supercrypt.getChunkSize(),
+            finalLength = computeOutputLength(file.size, chunkSize);
+
+        sMan = new StorageManager(file, finalLength);
+        encryptor = new supercrypt({
+            fileSize: sMan.getLength(),
+            saveBlock: sMan.store,
+            readBlock: sMan.readChunk,
+            progressHandler: handleProgress,
+            finishHandler: handleFinish.bind(this, true),
+            errorHandler: error
+        });
+
+        encryptor.encrypt(key, seedList);
+    };
+
+    this.decryptFile = function (file, key) {
+        sMan = new StorageManager(file, file.size - 48);
+        encryptor = new supercrypt({
+            fileSize: sMan.getLength(),
+            saveBlock: sMan.store,
+            readBlock: sMan.readChunk,
+            progressHandler: handleProgress,
+            finishHandler: handleFinish,
+            errorHandler: error,
+        });
+
+        encryptor.decrypt(key);
+    };
 };
+
+//exports
+module.exports = SecureMyFiles;
