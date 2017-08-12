@@ -74,15 +74,6 @@ var StorageManager = function (file, outputLength) {
     };
 
     /**
-     * Gets the file length
-     * @returns {Number} The file length
-     */
-    this.getLength = function () {
-        return fileSize;
-    };
-
-
-    /**
      * Saves the currently stored data to disk
      * @param {boolean} addExt - True if should add the encryption extension
      */

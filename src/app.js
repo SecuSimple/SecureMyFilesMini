@@ -7,8 +7,9 @@ var Utils = require('./utils');
  * @constructor
  * @param {Function} success - The success callback
  * @param {Function} error - The error callback
+ * @param {Function} progress - [Optional] The progress callback
  */
-var SecureMyFiles = function (success, error, progress, saveOnDisk) {
+var SecureMyFiles = function (success, error, progress) {
     var rGen = new Utils.RandomGenerator(),
         sMan,
         encryptor;
@@ -17,9 +18,9 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
         throw 'Success and Error callbacks are mandatory and must be functions!';
     }
 
-    var handleProgress = function (processed) {
+    var handleProgress = function (processedPercent) {
         if (typeof progress === 'function') {
-            progress(processed, sMan.getLength());
+            progress(processedPercent);
         }
     };
 
@@ -27,27 +28,12 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
         sMan.saveToDisk(addExt);
     };
 
-    var computeOutputLength = function (size, chunkSize) {
-        //add IV and MAC to the file size
-        var finalLength = size + 48;
-
-        //add fixed 16B padding on intermediary blocks
-        finalLength += Math.floor(size / chunkSize) * 16;
-
-        //add padding for the last block
-        finalLength += 16 - (size % 16);
-
-        return finalLength;
-    };
-
     this.encryptFile = function (file, key) {
-        var seedList = [],//TODO use random generator
-            chunkSize = supercrypt.getChunkSize(),
-            finalLength = computeOutputLength(file.size, chunkSize);
+        var seedList = rGen.generate();
 
-        sMan = new StorageManager(file, finalLength);
+        sMan = new StorageManager(file, supercrypt.getEncryptedLength(file.size));
         encryptor = new supercrypt({
-            fileSize: sMan.getLength(),
+            fileSize: file.size,
             saveBlock: sMan.store,
             readBlock: sMan.readChunk,
             progressHandler: handleProgress,
@@ -59,9 +45,9 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
     };
 
     this.decryptFile = function (file, key) {
-        sMan = new StorageManager(file, file.size - 48);
+        sMan = new StorageManager(file, supercrypt.getDecryptedLength(file.size));
         encryptor = new supercrypt({
-            fileSize: sMan.getLength(),
+            fileSize: file.size,
             saveBlock: sMan.store,
             readBlock: sMan.readChunk,
             progressHandler: handleProgress,

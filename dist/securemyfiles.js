@@ -40,6 +40,7 @@ var EncryptorAESCBC = function (key, iv) {
             paddingValue,
             resultArray = new Uint8Array(byteArray.byteLength);
 
+        //while block end was not reached
         while (startIndex < byteArray.byteLength) {
             endIndex = startIndex + algSize;
 
@@ -79,6 +80,7 @@ var EncryptorAESCBC = function (key, iv) {
             blockBefore,
             resultArray = new Uint8Array(byteArray.byteLength);
 
+        //while block end was not reached
         while (startIndex < byteArray.byteLength) {
             endIndex = startIndex + algSize;
 
@@ -123,6 +125,8 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Combines the state with a round of the key
+     * @param {Array} state - The state 
+     * @param {Array} rkey - The key round
      */
     function addRoundKey(state, rkey) {
         for (var i = 0; i < algSize; i++)
@@ -131,6 +135,8 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Replaces bytes in the state with bytes from the lookup table
+     * @param {Array} state - The state 
+     * @param {Array} sbox - Lookup table
      */
     function subBytes(state, sbox) {
         for (var i = 0; i < algSize; i++)
@@ -139,6 +145,8 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Shifts the rows of the state
+     * @param {Array} state - The state 
+     * @param {Array} shifttab - Shift table
      */
     function shiftRows(state, shifttab) {
         var h = state.slice(0);
@@ -148,6 +156,7 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Mixes state columns (using a fixed polinomial function)
+     * @param {Array} state - The state
      */
     function mixColumns(state) {
         for (var i = 0; i < algSize; i += 4) {
@@ -165,6 +174,7 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Inverted mix columns
+     * @param {Array} state - The state 
      */
     function mixColumnsInv(state) {
         for (var i = 0; i < algSize; i += 4) {
@@ -220,6 +230,7 @@ var EncryptorAESCBC = function (key, iv) {
 
     /**
      * Expands the cipher key according to its length
+     * @param {Array} key - The key 
      */
     function expandKey(key) {
         var kl = key.length,
@@ -235,7 +246,7 @@ var EncryptorAESCBC = function (key, iv) {
                 ks = algSize * (14 + 1);
                 break;
             default:
-                throw "Key error: Only key lengths of 16, 24 or 32 bytes allowed!";
+                throw new Error("Key error: Only key lengths of 16, 24 or 32 bytes allowed!");
         }
         for (var i = kl; i < ks; i += 4) {
             var temp = key.slice(i - 4, i);
@@ -252,8 +263,10 @@ var EncryptorAESCBC = function (key, iv) {
         }
     }
 
-    /** 
-     * Encrypt a 16-byte array block using the given key
+    /**
+     * Encrypts a 16-byte array block using the given key
+     * @param {Array} block - The block 
+     * @param {Array} key - The key
      */
     function encryptBlock(block, key) {
         var l = key.length;
@@ -269,8 +282,10 @@ var EncryptorAESCBC = function (key, iv) {
         addRoundKey(block, key.slice(i, l));
     }
 
-    /** 
+    /**
      * Decrypts a 16-byte array block using the given key
+     * @param {Array} block - The block 
+     * @param {Array} key - The key
      */
     function decryptBlock(block, key) {
         var l = key.length;
@@ -302,16 +317,36 @@ var algSize = 16;
 var macSize = algSize * 2;
 
 /**
-  * Gets the chunkSize
-  */
-var getChunkSize = function () {
-    return chunkSize;
+ * Computes the expected encryption output length
+ * @param {Number} size - The input size
+ * @return {Number} The final length after encryption in bytes
+ */
+var getEncryptedLength = function (size) {
+    //add IV and MAC to the input size
+    var finalLength = size + algSize + macSize;
+
+    //add fixed 16B padding on intermediary blocks
+    finalLength += Math.floor(size / chunkSize) * algSize;
+
+    //add padding for the last block
+    finalLength += algSize - (size % algSize);
+
+    return finalLength;
 };
 
+/**
+ * Computes the expected decryption output length (includes padding)
+ * @param {Number} size - The encrypted input size
+ * @return {Number} The final length after decryption in bytes
+ */
+var getDecryptedLength = function (size) {
+    //substract IV and MAC from the input size
+    return size - algSize - macSize;
+};
 
 /**
  * Encryptor class
- * 
+ * File Structure: [IV_16][Cyphertext][HMAC_32]
  * @param {object} options - The options for the encryptor
  * @returns {object} The encryptor object
  */
@@ -322,8 +357,7 @@ var supercrypt = function (options) {
         sizeRead,
         service = {
             encrypt: encrypt,
-            decrypt: decrypt,
-            getChunkSize: getChunkSize
+            decrypt: decrypt
         },
         defaultOps = {
             algorithm: Encryptors.AESCBC
@@ -343,23 +377,23 @@ var supercrypt = function (options) {
         extend(options, defaultOps);
 
         if (!options.readBlock) {
-            throw "Exception. The 'readBlock' parameter was not present in the options";
+            throw new Error("Exception. The 'readBlock' parameter was not present in the options");
         }
 
         if (!options.saveBlock) {
-            throw "Exception. The 'saveBlock' parameter was not present in the options";
+            throw new Error("Exception. The 'saveBlock' parameter was not present in the options");
         }
 
         if (!options.fileSize) {
-            throw "Exception. The 'fileSize' parameter was not present in the options.";
+            throw new Error("Exception. The 'fileSize' parameter was not present in the options.");
         }
 
         if (!options.finishHandler) {
-            throw "Exception. The 'finishHandler' parameter was not present in the options";
+            throw new Error("Exception. The 'finishHandler' parameter was not present in the options");
         }
 
         if (!options.errorHandler) {
-            throw "Exception. The 'errorHandler' parameter was not present in the options";
+            throw new Error("Exception. The 'errorHandler' parameter was not present in the options");
         }
 
         //adjusting to the size of the actual content (IV 16, MAC 32)
@@ -368,13 +402,12 @@ var supercrypt = function (options) {
 
     /**
      * Encrypts a byte block
-     * 
      * @param {Uint8Array} block - The block to encrypt
      * @returns {Array<Byte>} The encrypted block
      */
     function encrypt(key, seedList) {
         if (!key) {
-            throw "Exception. The parameter 'key' was not present";
+            throw new Error("Exception. The parameter 'key' was not present");
         }
 
         //generating key hash
@@ -400,12 +433,11 @@ var supercrypt = function (options) {
 
     /**
      * Saves and continues encryption
-     * 
      * @param {Uint8Array} block - The input block
      */
     function continueEncryption(block) {
         if (options.progressHandler) {
-            options.progressHandler(block.byteLength);
+            options.progressHandler(block.byteLength / options.fileSize);
         }
 
         //update total size read from file
@@ -432,7 +464,6 @@ var supercrypt = function (options) {
 
         //check if there's more to read
         if (!options.readBlock(chunkSize, continueEncryption)) {
-
             //save the mac and call the finish handler
             options.saveBlock(compMac.finalize());
             options.finishHandler();
@@ -441,7 +472,6 @@ var supercrypt = function (options) {
 
     /**
      * Decrypts a byte block
-     * 
      * @param {Uint8Array} block - The block to decrypt
      * @returns {Array<Byte>} The decrypted block
      */
@@ -449,7 +479,7 @@ var supercrypt = function (options) {
         var iv;
 
         if (!key) {
-            throw "Exception. The parameter 'key' was not present";
+            throw new Error("Exception. The parameter 'key' was not present");
         }
 
         //generating the key hash
@@ -473,18 +503,18 @@ var supercrypt = function (options) {
 
     /**
      * Saves and continues encryption
-     * 
      * @param {Uint8Array} block - The input block
      */
     function continueDecryption(block) {
         //update progress
         if (options.progressHandler) {
-            options.progressHandler(block.byteLength);
+            options.progressHandler(block.byteLength / options.fileSize);
         }
 
         //update total size read from file
         sizeRead += block.byteLength;
 
+        //computing byte diff between size read and expected decrypted file size
         var byteDiff = sizeRead - options.decryptionFileSize;
         if (sizeRead > options.decryptionFileSize) {
             //get the read mac from the block (last bytes bigger than the file content size)
@@ -511,7 +541,7 @@ var supercrypt = function (options) {
             return;
         }
 
-        //if not all the mac is in this block, read the next block as well
+        //if the entire mac is not in this block, read the next block as well
         if (byteDiff < 32) {
             options.readBlock(byteDiff, function (lastBlock) {
                 readMac.set(lastBlock, byteDiff);
@@ -527,7 +557,8 @@ var supercrypt = function (options) {
      * Validates mac and finalizes decryption
      */
     function validateAndFinalize() {
-        if (validateChecksum(readMac, compMac.finalize())) {
+        var cm = compMac.finalize();
+        if (validateChecksum(readMac, cm)) {
             options.finishHandler();
         }
         else {
@@ -586,15 +617,17 @@ function generateIV(seedList) {
 
 /**
  * Extends object a with properties from object b
- * 
  * @param {object} a - The object that will get modified to include all properties
  * @param {object} b - The object to take properties from
  * @returns The modified object
  */
 function extend(a, b) {
-    for (var key in b)
-        if (b.hasOwnProperty(key))
-            a[key] = b[key];
+    var keys = Object.keys(b);
+
+    keys.forEach(function(key) {
+        a[key] = b[key];
+    });
+
     return a;
 }
 
@@ -604,10 +637,6 @@ function extend(a, b) {
  * @param {Array} comp - Array
  */
 function validateChecksum(read, comp) {
-    if (read.byteLength !== comp.length) {
-        return false;
-    }
-
     var i = read.byteLength;
     while (i--) {
         if (read[i] !== comp[i]) {
@@ -618,8 +647,9 @@ function validateChecksum(read, comp) {
     return true;
 }
 
-//setting the static function
-supercrypt.getChunkSize = getChunkSize;
+//setting the static functions
+supercrypt.getEncryptedLength = getEncryptedLength;
+supercrypt.getDecryptedLength = getDecryptedLength;
 
 //exports
 module.exports = supercrypt;
@@ -642,6 +672,9 @@ var hmac256 = function (key) {
     init();
     return service;
 
+    /**
+     * Initializes the hash
+     */
     function init() {
         var i;
 
@@ -667,8 +700,6 @@ var hmac256 = function (key) {
             hash256.updateByte(msg);
         }
     }
-
-
     
     /**
      * Finalizes the HMAC calculation
@@ -931,8 +962,9 @@ var Utils = require('./utils');
  * @constructor
  * @param {Function} success - The success callback
  * @param {Function} error - The error callback
+ * @param {Function} progress - [Optional] The progress callback
  */
-var SecureMyFiles = function (success, error, progress, saveOnDisk) {
+var SecureMyFiles = function (success, error, progress) {
     var rGen = new Utils.RandomGenerator(),
         sMan,
         encryptor;
@@ -941,9 +973,9 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
         throw 'Success and Error callbacks are mandatory and must be functions!';
     }
 
-    var handleProgress = function (processed) {
+    var handleProgress = function (processedPercent) {
         if (typeof progress === 'function') {
-            progress(processed, sMan.getLength());
+            progress(processedPercent);
         }
     };
 
@@ -951,27 +983,12 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
         sMan.saveToDisk(addExt);
     };
 
-    var computeOutputLength = function (size, chunkSize) {
-        //add IV and MAC to the file size
-        var finalLength = size + 48;
-
-        //add fixed 16B padding on intermediary blocks
-        finalLength += Math.floor(size / chunkSize) * 16;
-
-        //add padding for the last block
-        finalLength += 16 - (size % 16);
-
-        return finalLength;
-    };
-
     this.encryptFile = function (file, key) {
-        var seedList = [],//TODO use random generator
-            chunkSize = supercrypt.getChunkSize(),
-            finalLength = computeOutputLength(file.size, chunkSize);
+        var seedList = rGen.generate();
 
-        sMan = new StorageManager(file, finalLength);
+        sMan = new StorageManager(file, supercrypt.getEncryptedLength(file.size));
         encryptor = new supercrypt({
-            fileSize: sMan.getLength(),
+            fileSize: file.size,
             saveBlock: sMan.store,
             readBlock: sMan.readChunk,
             progressHandler: handleProgress,
@@ -983,9 +1000,9 @@ var SecureMyFiles = function (success, error, progress, saveOnDisk) {
     };
 
     this.decryptFile = function (file, key) {
-        sMan = new StorageManager(file, file.size - 48);
+        sMan = new StorageManager(file, supercrypt.getDecryptedLength(file.size));
         encryptor = new supercrypt({
-            fileSize: sMan.getLength(),
+            fileSize: file.size,
             saveBlock: sMan.store,
             readBlock: sMan.readChunk,
             progressHandler: handleProgress,
@@ -1074,15 +1091,6 @@ var StorageManager = function (file, outputLength) {
             callback();
         }
     };
-
-    /**
-     * Gets the file length
-     * @returns {Number} The file length
-     */
-    this.getLength = function () {
-        return fileSize;
-    };
-
 
     /**
      * Saves the currently stored data to disk
