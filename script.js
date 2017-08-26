@@ -99,6 +99,7 @@
                 err = 'Password too long. Max: 32 characters.';
                 break;
         }
+
         processed = 0;
         progressThumb.style.width = 0;
         filePass.value = '';
@@ -111,9 +112,9 @@
         hlabel.setAttribute('class', 'haserrorh');
     };
 
-    var handleProgress = function (procAmount, total) {
-        processed += procAmount;
-        var wdt = parseInt(processed / total * 100);
+    var handleProgress = function (processedPrc) {
+        processed += processedPrc * 100;
+        var wdt = parseInt(processed);
 
         progressThumb.style.width = wdt.toString() + '%';
     };

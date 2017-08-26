@@ -1,9 +1,14 @@
 {
-    "name": "SecureMyFilesMini",
-    "version": "1.0.0",
+    "name": "securemyfiles",
+    "description": "Symmetric encryption application in JavaScript",
+    "license": "MIT",
+    "version": "2.0.0",
     "repository": {
         "type": "git",
         "url": "git://github.com/SecuSimple/SecureMyFilesMini.git"
+    },
+    "dependencies": {
+        "supercrypt": "1.0.1"
     },
     "devDependencies": {
         "grunt": "~0.4.5",

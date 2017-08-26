@@ -1,6 +1,6 @@
-var supercrypt = require('../lib/supercrypt');
+var supercrypt = require('supercrypt');
 var StorageManager = require('./storagemgr');
-var Utils = require('./utils');
+var RandomGenerator = require('./randomgenerator');
 
 /** 
  * Main Secure My Files (SMF) class - creates a new SMF object
@@ -10,7 +10,7 @@ var Utils = require('./utils');
  * @param {Function} progress - [Optional] The progress callback
  */
 var SecureMyFiles = function (success, error, progress) {
-    var rGen = new Utils.RandomGenerator(),
+    var rGen = new RandomGenerator(),
         sMan,
         encryptor;
 
@@ -26,6 +26,7 @@ var SecureMyFiles = function (success, error, progress) {
 
     var handleFinish = function (addExt) {
         sMan.saveToDisk(addExt);
+        success();
     };
 
     this.encryptFile = function (file, key) {

@@ -1,5 +1,3 @@
-var Utils = require('./utils');
-
 /**
  * Manages file operations
  * @param {File} file - The disk file to be handled
